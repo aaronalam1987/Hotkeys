@@ -1,0 +1,34 @@
+﻿<Window x:Class="Hotkeys.CreateMacro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hotkeys"
+        mc:Ignorable="d"
+        Title="Create Macro" Height="185" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight">
+    <Grid Name="Main" Width="700" Height="165">
+        <GroupBox Header="Current Macro:" Margin="10,0,0,10" Width="680" Height="120" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid Width="680" Height="105">
+                <TextBox Name="Macro" Width="660" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,14,0,0" PreviewKeyDown="Macro_OnKeyDown"/>
+                <Label Name="howTo" Width="290" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,37,0,0">
+                    <TextBlock>
+                    Seperate keypresses with ","
+                    <LineBreak/>
+                    Add function commands using the dropdown box
+                    </TextBlock>
+                </Label>
+                <ComboBox Name="MacroFunction" HorizontalAlignment="Left" Margin="480,46,0,0" VerticalAlignment="Top" Width="120">
+                    <ComboBoxItem Content="Select..." IsSelected="True" IsEnabled="False" />
+                    <ComboBoxItem Content="Enter"/>
+                    <ComboBoxItem Content="Left Ctrl"/>
+                    <ComboBoxItem Content="Escape"/>
+                </ComboBox>
+                <Button Name="Insert" Content="Insert" HorizontalAlignment="Left" Width="60" Height="20" VerticalAlignment="Top" Margin="605,47,0,0" Click="Insert_Click"/>
+            </Grid>
+        </GroupBox>
+        <Button Name="Clear" Content="Clear" HorizontalAlignment="Left" Width="60" Height="20" Margin="10,117,0,0" Click="Clear_Click"/>
+        <Button Name="Exit" Content="Exit" HorizontalAlignment="Right" Width="60" Height="20" Margin="0,117,10,0" Click="Exit_Click"/>
+        <Button Name="Save" Content="Save" HorizontalAlignment="Right" Width="60" Height="20" Margin="0,117,75,0" Click="Save_Click"/>
+        <Label Name="NoSpaceLbl" Content="No spaces allowed" HorizontalAlignment="Left" Margin="75,128,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+    </Grid>
+</Window>
