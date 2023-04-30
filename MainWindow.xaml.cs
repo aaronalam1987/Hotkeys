@@ -28,6 +28,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Windows.Markup;
 using System.Drawing;
 using Microsoft.VisualBasic;
+using System.Windows.Threading;
+using System.Xml;
 
 namespace Hotkeys
 {
@@ -38,13 +40,16 @@ namespace Hotkeys
     {
         [DllImport("user32.dll", SetLastError = true)]
         static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
-        //char WM_CHAR
         SerialPort port;
         string accessPort;
 
         public MainWindow()
         {
             InitializeComponent();
+            Load_Settings();
+            DispatcherTimer updateTime = new DispatcherTimer();
+            updateTime.Interval = TimeSpan.FromMinutes(1);
+            updateTime.Tick += new EventHandler(update_Time);
 
             //Default states
             string connectionState = "";
@@ -58,10 +63,11 @@ namespace Hotkeys
                     port = new SerialPort(accessPort, 9600);
                     port.Open();
                     connectionState = "Connected on: " + accessPort;
-                    string currTime = "2" + DateAndTime.Now.ToShortTimeString();
                     //Write to module to stop the ping.
                     port.Write("1\n");
-                    port.Write(currTime + "\n");
+                    //Send initial time and then let the timer take over.
+                    port.Write("2" + DateAndTime.Now.ToShortTimeString() + "\n");
+                    updateTime.Start();
                     //Data recieve
                     port.DataReceived += new SerialDataReceivedEventHandler(DataReceived);
                 }
@@ -78,103 +84,198 @@ namespace Hotkeys
             FindCom.Start();
 
         }
+
+        public void Load_Settings()
+        {
+            if (File.Exists(@"settings.xml")){
+                XmlReader readSettings = XmlReader.Create(@"settings.xml");
+                while (readSettings.Read())
+                {
+                    switch (readSettings.Name.ToString())
+                    {
+                        case "B1":
+                            B1_Location.Text = readSettings.ReadElementContentAsString();
+                            typeLabelB1.Content = CheckType(B1_Location.Text);
+                            break;
+                        case "B2":
+                            B2_Location.Text = readSettings.ReadElementContentAsString();
+                            typeLabelB2.Content = CheckType(B2_Location.Text);
+                            break;
+                        case "B3":
+                            B3_Location.Text = readSettings.ReadElementContentAsString();
+                            typeLabelB3.Content = CheckType(B3_Location.Text);
+                            break;
+                        case "B4":
+                            B4_Location.Text = readSettings.ReadElementContentAsString();
+                            typeLabelB4.Content = CheckType(B4_Location.Text);
+                            break;
+
+                    }
+                }
+            }
+        }
+
+        public void Save_Settings()
+        {
+            try
+            {
+
+                XmlWriterSettings settings = new XmlWriterSettings();
+                settings.Indent = true;
+                XmlWriter writer = XmlWriter.Create(@"settings.xml", settings);
+
+                writer.WriteStartDocument();
+                writer.WriteStartElement("Settings");
+                writer.WriteElementString("B1", B1_Location.Text);
+                writer.WriteElementString("B2", B2_Location.Text);
+                writer.WriteElementString("B3", B3_Location.Text);
+                writer.WriteElementString("B4", B4_Location.Text);
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Flush();
+                writer.Close();
+            }
+            catch
+            {
+
+            }
+        }
         
+        public void update_Time(object sender, EventArgs e)
+        {
+            if (port.IsOpen)
+            {
+                port.Write("2" + DateAndTime.Now.ToShortTimeString() + "\n");
+            }
+        }
 
         Dictionary<string, byte> keyCodes = new Dictionary<string, byte>()
         {
-            {"a", 0x41 },
-            {"b", 0x42 },
-            {"c", 0x43 },
-            {"d", 0x44 },
-            {"e", 0x45 },
-            {"f", 0x46 },
-            {"g", 0x47 },
-            {"h", 0x48 },
-            {"i", 0x49 },
-            {"j", 0x4A },
-            {"k", 0x4B },
-            {"l", 0x4C },
-            {"m", 0x4D },
-            {"n", 0x4E },
-            {"o", 0x4F },
-            {"p", 0x50 },
-            {"q", 0x51 },
-            {"r", 0x52 },
-            {"s", 0x53 },
-            {"t", 0x54 },
-            {"u", 0x55 },
-            {"v", 0x56 },
-            {"w", 0x57 },
-            {"x", 0x58 },
-            {"y", 0x59 },
-            {"z", 0x5A },
-            {"enter", 0x0D }
+            {"0", 48 },
+            {"1", 49 },
+            {"2", 50 },
+            {"3", 51 },
+            {"4", 52 },
+            {"5", 53 },
+            {"6", 54 },
+            {"7", 55 },
+            {"8", 56 },
+            {"9", 57 },
+            {"a", 65 },
+            {"b", 66 },
+            {"c", 67 },
+            {"d", 68 },
+            {"e", 69 },
+            {"f", 70 },
+            {"g", 71 },
+            {"h", 72 },
+            {"i", 73 },
+            {"j", 74 },
+            {"k", 75 },
+            {"l", 76 },
+            {"m", 77 },
+            {"n", 78 },
+            {"o", 79 },
+            {"p", 80 },
+            {"q", 81 },
+            {"r", 82 },
+            {"s", 83 },
+            {"t", 84 },
+            {"u", 85 },
+            {"v", 86 },
+            {"w", 87 },
+            {"x", 88 },
+            {"y", 89 },
+            {"z", 90 },
+            {"enter", 13 },
+            {"ctrl", 17 },
+            {"space", 31 },
+            {"escape", 27 },
+            {"alt", 18 },
+            {"f1", 112 },
+            {"f2", 113 },
+            {"f3", 114 },
+            {"f4", 115 },
+            {"f5", 116 },
+            {"f6", 117 },
+            {"f7", 118 },
+            {"f8", 119 },
+            {"f9", 120 },
+            {"f10", 121 },
+            {"f11", 122 },
+            {"f12", 123 }
 
         };
 
         async void doLaunch(string loc)
         {
-            try
+            if (loc != "")
             {
-                string filename;
-                FileInfo File_Info = new FileInfo(loc);
-                if (File_Info.Exists)
+                try
                 {
-                    if (File_Info.Extension == ".exe")
+                    FileInfo File_Info = new FileInfo(loc);
+                    if (File_Info.Exists)
                     {
-                    Process newProc = new Process();
-                        filename = File_Info.Name;
-                        newProc.StartInfo.FileName = filename;
-                        conState.Text = "Launching " + filename + "..";
-                        await Task.Delay(2000);
-                        if (newProc.Start())
+                        if (File_Info.Extension == ".exe")
                         {
-                            conState.Text = "Connected on: " + accessPort;
-                        }
-                        else
-                        {
-                            conState.Text = "There was an error launching " + filename + "..";
-                        }
-                    }
-                    else if (File_Info.Extension == ".hkmac")
-                    {
-                        string readMacro = File.ReadAllText(File_Info.FullName);
-                        string sendString = "";
-                        for(int i=0; i<readMacro.Length; i++)
-                        {
-                            if (readMacro[i].ToString() != ",")
+                            Process newProc = new Process();
+                            newProc.StartInfo.FileName = File_Info.FullName;
+                            conState.Text = "Launching " + File_Info.Name + "...";
+                            port.Write("3" + File_Info.Name + "\n");
+                            await Task.Delay(2000);
+                            if (newProc.Start())
                             {
-                                sendString += readMacro[i].ToString();
+                                conState.Text = "Connected on: " + accessPort;
+                                port.Write("4\n");
                             }
-                            else {
-                                if (keyCodes.ContainsKey(sendString))
+                            else
+                            {
+                                conState.Text = "There was an error launching " + File_Info.Name + "..";
+                            }
+                        }
+                        else if (File_Info.Extension == ".hkmac")
+                        {
+                            string readMacro = File.ReadAllText(File_Info.FullName);
+                            string sendString = "";
+                            for (int i = 0; i < readMacro.Length; i++)
+                            {
+                                if (readMacro[i].ToString() != ",")
                                 {
-                                    byte key = keyCodes[sendString];
-                                    keybd_event(key, 0, 0, 0);
-                                    keybd_event(key, 0, 2, 0);
+                                    sendString += readMacro[i].ToString();
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Unknown key command: " + sendString + "!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    sendString = sendString.ToLower();
+                                    if (keyCodes.ContainsKey(sendString))
+                                    {
+                                        byte key = keyCodes[sendString];
+                                        keybd_event(key, 0, 0, 0);
+                                        Thread.Sleep(10);
+                                        keybd_event(key, 0, 2, 0);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Unknown key command: " + sendString + "!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
+                                    sendString = "";
                                 }
-                                sendString = "";
                             }
                         }
+                        else
+                        {
+                            MessageBox.Show("Not a valid filetype!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+
                     }
                     else
                     {
-                        MessageBox.Show("Not a valid filetype!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("File does not exist!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("File does not exist!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
-                }                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
+                    MessageBox.Show(ex.ToString());
+                }
             }
         }
     
@@ -216,6 +317,7 @@ namespace Hotkeys
                     port.Close();
                 }
             }
+            Save_Settings();
         }
 
         void MainWindow_StateChanged(object sender, EventArgs e)
@@ -232,6 +334,7 @@ namespace Hotkeys
         {
             Close();
         }
+
         void FindComPort()
         {
                 string[] comPorts = SerialPort.GetPortNames();
@@ -300,6 +403,7 @@ namespace Hotkeys
         public void DoBrowse(string num)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Application or Macro|*.exe;*.hkmac|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 switch (num)
