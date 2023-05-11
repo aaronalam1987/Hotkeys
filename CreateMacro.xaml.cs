@@ -66,8 +66,6 @@ namespace Hotkeys
             saveFileDialog.OverwritePrompt = true;
             if (saveFileDialog.ShowDialog() == true)
             {
-                
-                MessageBox.Show(saveFileDialog.FileName);
                 try
                 {
                     using (StreamWriter writeFile = new StreamWriter(Path.Combine(saveFileDialog.FileName), true))

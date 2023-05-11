@@ -1,32 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO.Ports;
 using System.ComponentModel;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Windows.Media.Animation;
 using System.Runtime.InteropServices;
-using System.Printing.IndexedProperties;
-using System.ComponentModel.DataAnnotations;
-using System.Windows.Markup;
-using System.Drawing;
 using Microsoft.VisualBasic;
 using System.Windows.Threading;
 using System.Xml;
@@ -141,7 +124,7 @@ namespace Hotkeys
             }
         }
         
-        public void update_Time(object sender, EventArgs e)
+        public void update_Time(object? sender, EventArgs e)
         {
             if (port.IsOpen)
             {
@@ -149,63 +132,7 @@ namespace Hotkeys
             }
         }
 
-        Dictionary<string, byte> keyCodes = new Dictionary<string, byte>()
-        {
-            {"0", 48 },
-            {"1", 49 },
-            {"2", 50 },
-            {"3", 51 },
-            {"4", 52 },
-            {"5", 53 },
-            {"6", 54 },
-            {"7", 55 },
-            {"8", 56 },
-            {"9", 57 },
-            {"a", 65 },
-            {"b", 66 },
-            {"c", 67 },
-            {"d", 68 },
-            {"e", 69 },
-            {"f", 70 },
-            {"g", 71 },
-            {"h", 72 },
-            {"i", 73 },
-            {"j", 74 },
-            {"k", 75 },
-            {"l", 76 },
-            {"m", 77 },
-            {"n", 78 },
-            {"o", 79 },
-            {"p", 80 },
-            {"q", 81 },
-            {"r", 82 },
-            {"s", 83 },
-            {"t", 84 },
-            {"u", 85 },
-            {"v", 86 },
-            {"w", 87 },
-            {"x", 88 },
-            {"y", 89 },
-            {"z", 90 },
-            {"enter", 13 },
-            {"ctrl", 17 },
-            {"space", 31 },
-            {"escape", 27 },
-            {"alt", 18 },
-            {"f1", 112 },
-            {"f2", 113 },
-            {"f3", 114 },
-            {"f4", 115 },
-            {"f5", 116 },
-            {"f6", 117 },
-            {"f7", 118 },
-            {"f8", 119 },
-            {"f9", 120 },
-            {"f10", 121 },
-            {"f11", 122 },
-            {"f12", 123 }
-
-        };
+        
 
         async void doLaunch(string loc)
         {
@@ -235,6 +162,7 @@ namespace Hotkeys
                         }
                         else if (File_Info.Extension == ".hkmac")
                         {
+                            byte prekey = 0;
                             string readMacro = File.ReadAllText(File_Info.FullName);
                             string sendString = "";
                             for (int i = 0; i < readMacro.Length; i++)
@@ -246,15 +174,31 @@ namespace Hotkeys
                                 else
                                 {
                                     sendString = sendString.ToLower();
-                                    if (keyCodes.ContainsKey(sendString))
+                                    if(sendString == "ctrl" || sendString == "alt")
                                     {
-                                        byte key = keyCodes[sendString];
+                                        prekey = KeyCodes.GetKeyCode(sendString);
+                                        keybd_event(prekey, 0, 0, 0);
+                                    }
+                                    else if(KeyCodes.GetKeyCode(sendString) != 0)
+                                    {
+                                        byte key = KeyCodes.GetKeyCode(sendString);
                                         keybd_event(key, 0, 0, 0);
                                         Thread.Sleep(10);
                                         keybd_event(key, 0, 2, 0);
+                                        Thread.Sleep(10);
+                                        if(prekey != 0)
+                                        {
+                                            keybd_event(prekey, 0, 2, 0);
+                                            prekey = 0;
+                                        }
                                     }
                                     else
                                     {
+                                        if (prekey != 0)
+                                        {
+                                            keybd_event(prekey, 0, 2, 0);
+                                            prekey = 0;
+                                        }
                                         MessageBox.Show("Unknown key command: " + sendString + "!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
                                     }
                                     sendString = "";
@@ -283,24 +227,19 @@ namespace Hotkeys
         {
             SerialPort port = (SerialPort)sender;
             string data = port.ReadLine();
-            string src;
             Application.Current.Dispatcher.BeginInvoke(() => {
                 switch (data) {
                     case string bCheck when bCheck.Contains("HKB1"):
-                        src = B1_Location.Text;
-                        doLaunch(src);
+                        doLaunch(B1_Location.Text);
                         break;
                     case string bCheck when bCheck.Contains("HKB2"):
-                        src = B2_Location.Text;
-                        doLaunch(src);
+                        doLaunch(B2_Location.Text);
                         break;
                     case string bCheck when bCheck.Contains("HKB3"):
-                        src = B3_Location.Text;
-                        doLaunch(src);
+                        doLaunch(B3_Location.Text);
                         break;
                     case string bCheck when bCheck.Contains("HKB4"):
-                        src = B4_Location.Text;
-                        doLaunch(src);
+                        doLaunch(B4_Location.Text);
                         break;
 
                 }

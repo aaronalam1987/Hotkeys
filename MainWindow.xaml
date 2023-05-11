@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Hotkeys"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="Hotkeys.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="370" Width="700" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Closing="MainWindow_Closing" StateChanged="MainWindow_StateChanged" Icon="/192x192.png">
+        Title="Hotkeys" Height="370" Width="700" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Closing="MainWindow_Closing" StateChanged="MainWindow_StateChanged" Icon="/192x192.png">
     <Grid x:Name="Main" Height="355" Width="700" VerticalAlignment="Top">
         <GroupBox x:Name="ButtonOne" Header="Button One" Margin="0,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" Height="65">
             <Grid x:Name="Group" Height="35" Width="680">

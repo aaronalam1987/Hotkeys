@@ -125,7 +125,7 @@ namespace Hotkeys {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Hotkeys;V1.0.0.0;component/createmacro.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Hotkeys;component/createmacro.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\CreateMacro.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

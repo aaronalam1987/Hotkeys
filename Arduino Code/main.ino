@@ -155,8 +155,7 @@ void setup() {
   //Print to serial if unable to set OLED.
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1306 allocation failed"));
-    for (;;)
-      ;
+    for (;;);
   }
 
   //Clear the oled display.
@@ -248,7 +247,7 @@ void loop() {
   }
 
   //We are connected, display this on screen and detect button presses,
-  //When receieved, just print to serial which button has been pressed to be detected by the application.
+  //When received, just print to serial which button has been pressed to be detected by the application.
   else {
     conState = "Connected!";
     if (displayText != "") {
