@@ -30,6 +30,9 @@ namespace Hotkeys
         {
             InitializeComponent();
             Load_Settings();
+
+            //Create a new timer which is used to update time on Arduino LED once connected.
+            //Could avoid using this method by equipping the Arduino with an RTC module.
             DispatcherTimer updateTime = new DispatcherTimer();
             updateTime.Interval = TimeSpan.FromMinutes(1);
             updateTime.Tick += new EventHandler(update_Time);
@@ -70,6 +73,7 @@ namespace Hotkeys
 
         public void Load_Settings()
         {
+            //Load settings from XML file
             if (File.Exists(@"settings.xml")){
                 XmlReader readSettings = XmlReader.Create(@"settings.xml");
                 while (readSettings.Read())
@@ -102,7 +106,6 @@ namespace Hotkeys
         {
             try
             {
-
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 XmlWriter writer = XmlWriter.Create(@"settings.xml", settings);
@@ -126,32 +129,39 @@ namespace Hotkeys
         
         public void update_Time(object? sender, EventArgs e)
         {
+            //This runs every minute and updates the connected Arduino time.
+            //We can rely on using port.IsOpen being the correct device as it previous checks confirm this.
             if (port.IsOpen)
             {
                 port.Write("2" + DateAndTime.Now.ToShortTimeString() + "\n");
             }
         }
 
-        
-
         async void doLaunch(string loc)
         {
+            //The steps we take when a button press is sent to the application.
             if (loc != "")
             {
                 try
                 {
+                    //Create a new FileInfo on the source file.
                     FileInfo File_Info = new FileInfo(loc);
                     if (File_Info.Exists)
                     {
+                        //We have two modes of launching, one for .exe and one for .hkmac (macro file)
                         if (File_Info.Extension == ".exe")
                         {
+                            //Create a new process.
                             Process newProc = new Process();
                             newProc.StartInfo.FileName = File_Info.FullName;
+                            //Set our connection state label text to launching... write "3" to the Arduino we defines the data as an application launch.
                             conState.Text = "Launching " + File_Info.Name + "...";
                             port.Write("3" + File_Info.Name + "\n");
+                            //Delay for 2 seconds so you can actually see both the label and Arduino OLED update.
                             await Task.Delay(2000);
                             if (newProc.Start())
                             {
+                                //Process launched, reset connection state label to current state and send "4" to Arduino which clears previous file info.
                                 conState.Text = "Connected on: " + accessPort;
                                 port.Write("4\n");
                             }
@@ -162,17 +172,21 @@ namespace Hotkeys
                         }
                         else if (File_Info.Extension == ".hkmac")
                         {
+                            //prekey stores either ctrl or alt presses and is used to depress a key after the next one has been sent.
+                            //eg. "Ctrl, A" would store CTRL in prekey, press CTRL, press A and then depress the prekey, CTRL.
                             byte prekey = 0;
                             string readMacro = File.ReadAllText(File_Info.FullName);
                             string sendString = "";
                             for (int i = 0; i < readMacro.Length; i++)
                             {
+                                //"," is a terminating point so we build up a string until we hit it.
                                 if (readMacro[i].ToString() != ",")
                                 {
                                     sendString += readMacro[i].ToString();
                                 }
                                 else
                                 {
+                                    //Hit break point, conver to lower and check if it contains any holdable press.
                                     sendString = sendString.ToLower();
                                     if(sendString == "ctrl" || sendString == "alt")
                                     {
@@ -181,6 +195,9 @@ namespace Hotkeys
                                     }
                                     else if(KeyCodes.GetKeyCode(sendString) != 0)
                                     {
+                                        //Get key byte from KeyCodes, press, wait for 10ms, depress, wait for 10ms.
+                                        //If prekey is defined, depress that also.
+                                        //The Thread.Sleep keeps the keypresses looking smooth, without it, it becomes blocky and sometimes won't update until it detects a fresh press or mouse movement. (this was my solution anyway).
                                         byte key = KeyCodes.GetKeyCode(sendString);
                                         keybd_event(key, 0, 0, 0);
                                         Thread.Sleep(10);
@@ -194,11 +211,6 @@ namespace Hotkeys
                                     }
                                     else
                                     {
-                                        if (prekey != 0)
-                                        {
-                                            keybd_event(prekey, 0, 2, 0);
-                                            prekey = 0;
-                                        }
                                         MessageBox.Show("Unknown key command: " + sendString + "!", "Hotkeys", MessageBoxButton.OK, MessageBoxImage.Error);
                                     }
                                     sendString = "";
@@ -226,8 +238,10 @@ namespace Hotkeys
         private void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort port = (SerialPort)sender;
+            //Read data.
             string data = port.ReadLine();
             Application.Current.Dispatcher.BeginInvoke(() => {
+                //Do action based on content.
                 switch (data) {
                     case string bCheck when bCheck.Contains("HKB1"):
                         doLaunch(B1_Location.Text);
@@ -276,6 +290,7 @@ namespace Hotkeys
 
         void FindComPort()
         {
+            //Check if any com ports are available and if so, search for the verify string in each one.
                 string[] comPorts = SerialPort.GetPortNames();
                 if (comPorts.Length > 0)
                 {
