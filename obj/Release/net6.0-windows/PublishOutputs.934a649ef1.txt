@@ -1,0 +1,13 @@
+C:\Users\aaron\Desktop\New folder (3)\Hotkeys.exe
+C:\Users\aaron\Desktop\New folder (3)\Hotkeys.dll
+C:\Users\aaron\Desktop\New folder (3)\Hotkeys.deps.json
+C:\Users\aaron\Desktop\New folder (3)\Hotkeys.runtimeconfig.json
+C:\Users\aaron\Desktop\New folder (3)\Hotkeys.pdb
+C:\Users\aaron\Desktop\New folder (3)\System.IO.Ports.dll
+C:\Users\aaron\Desktop\New folder (3)\runtimes\linux-arm\native\libSystem.IO.Ports.Native.so
+C:\Users\aaron\Desktop\New folder (3)\runtimes\linux-arm64\native\libSystem.IO.Ports.Native.so
+C:\Users\aaron\Desktop\New folder (3)\runtimes\linux-x64\native\libSystem.IO.Ports.Native.so
+C:\Users\aaron\Desktop\New folder (3)\runtimes\osx-arm64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\aaron\Desktop\New folder (3)\runtimes\osx-x64\native\libSystem.IO.Ports.Native.dylib
+C:\Users\aaron\Desktop\New folder (3)\runtimes\unix\lib\net6.0\System.IO.Ports.dll
+C:\Users\aaron\Desktop\New folder (3)\runtimes\win\lib\net6.0\System.IO.Ports.dll

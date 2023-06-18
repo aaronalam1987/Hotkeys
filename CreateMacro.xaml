@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hotkeys"
         mc:Ignorable="d"
-        Title="Create Macro" Height="185" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight">
+        Title="Create Macro" Height="185" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" Icon="/192x192.png" ShowInTaskbar="False">
     <Grid Name="Main" Width="700" Height="165">
         <GroupBox Header="Current Macro:" Margin="10,0,0,10" Width="680" Height="120" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid Width="680" Height="105">

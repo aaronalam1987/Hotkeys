@@ -8,41 +8,46 @@
         mc:Ignorable="d"
         Title="Hotkeys" Height="370" Width="700" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Closing="MainWindow_Closing" StateChanged="MainWindow_StateChanged" Icon="/192x192.png">
     <Grid x:Name="Main" Height="355" Width="700" VerticalAlignment="Top">
-        <GroupBox x:Name="ButtonOne" Header="Button One" Margin="0,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" Height="65">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GroupBox x:Name="ButtonOne" Header="Button One" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="680" Height="65" Grid.ColumnSpan="2">
             <Grid x:Name="Group" Height="35" Width="680">
                 <Button x:Name="Button1" Click="browseButton_Click" Width="60" Height="20" Margin="5,0,0,0" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center" Tag="1"/>
                 <TextBox x:Name="B1_Location" HorizontalAlignment="Left" Margin="72,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="490" Height="20" IsReadOnly="True"/>
                 <Label x:Name="typeLabelB1" Content="Type: Not set" HorizontalAlignment="Left" Margin="567,4,0,3"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="ButtonTwo" Header="Button Two" Margin="0,80,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" Height="65">
+        <GroupBox x:Name="ButtonTwo" Header="Button Two" Margin="10,80,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="680" Height="65" Grid.ColumnSpan="2">
             <Grid x:Name="Group1" Height="35" Width="680">
                 <Button x:Name="Button2" Click="browseButton_Click" Width="60" Height="20" Margin="5,0,0,0" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center" Tag="2"/>
                 <TextBox x:Name="B2_Location" HorizontalAlignment="Left" Margin="72,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="490" Height="20" IsReadOnly="True"/>
                 <Label x:Name="typeLabelB2" Content="Type: Not set" HorizontalAlignment="Left" Margin="567,4,0,3"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="ButtonThree" Header="Button Three" Margin="0,150,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" Height="65">
+        <GroupBox x:Name="ButtonThree" Header="Button Three" Margin="10,150,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="680" Height="65" Grid.ColumnSpan="2">
             <Grid x:Name="Group2" Height="35" Width="680">
                 <Button x:Name="Button3" Click="browseButton_Click" Width="60" Height="20" Margin="5,0,0,0" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center" Tag="3"/>
                 <TextBox x:Name="B3_Location" HorizontalAlignment="Left" Margin="72,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="490" Height="20" IsReadOnly="True"/>
                 <Label x:Name="typeLabelB3" Content="Type: Not set" HorizontalAlignment="Left" Margin="567,4,0,3"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="ButtonFour" Header="Button Four" Margin="0,220,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="680" Height="65">
+        <GroupBox x:Name="ButtonFour" Header="Button Four" Margin="10,220,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="680" Height="65" Grid.ColumnSpan="2">
             <Grid x:Name="Group3" Height="35" Width="680">
                 <Button x:Name="Button4" Click="browseButton_Click" Width="60" Height="20" Margin="5,0,0,0" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center" Tag="4"/>
                 <TextBox x:Name="B4_Location" HorizontalAlignment="Left" Margin="72,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="490" Height="20" IsReadOnly="True"/>
                 <Label x:Name="typeLabelB4" Content="Type: Not set" HorizontalAlignment="Left" Margin="567,4,0,3"/>
             </Grid>
         </GroupBox>
-        <Button x:Name="CreateMacro" Width="80" Height="20" HorizontalAlignment="Left" Margin="10,290,0,20" Content="Create Macro" Click="CreateMacro_Click"/>
-        <Button x:Name="Save" Width="60" Height="20" HorizontalAlignment="Right" Margin="0,290,77,20" Content="Save" />
-        <Button x:Name="Exit" Width="60" Height="20" HorizontalAlignment="Right" Margin="0,290,10,20" Content="Exit" Click="exit_Click"/>
-        <StatusBar x:Name="statusBar" VerticalAlignment="Bottom" Height="25">
+        <Button x:Name="CreateMacro" Width="80" Height="20" HorizontalAlignment="Left" Margin="10,302,0,33" Content="Create Macro" Click="CreateMacro_Click"/>
+        <Button x:Name="Save" Width="60" Height="20" HorizontalAlignment="Right" Margin="0,302,77,33" Content="Save" Grid.Column="1" />
+        <Button x:Name="Exit" Width="60" Height="20" HorizontalAlignment="Right" Margin="0,302,10,33" Content="Exit" Click="exit_Click" Grid.Column="1"/>
+        <StatusBar x:Name="statusBar" VerticalAlignment="Bottom" Height="25" Grid.ColumnSpan="2">
             <StatusBarItem>
                 <TextBlock x:Name="conState" HorizontalAlignment="Left"><Run Text="Waiting for connection..."/></TextBlock>
             </StatusBarItem>
         </StatusBar>
+        <CheckBox x:Name="minimiseOnStartup" Content="Minimise On Startup" HorizontalAlignment="Left" Margin="429,305,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

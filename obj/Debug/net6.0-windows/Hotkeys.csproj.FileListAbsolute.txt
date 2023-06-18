@@ -30,3 +30,5 @@ C:\Users\aaron\Desktop\Projects\C#\Hotkeys\obj\Debug\net6.0-windows\Hotkeys.genr
 C:\Users\aaron\Desktop\Projects\C#\Hotkeys\obj\Debug\net6.0-windows\ref\Hotkeys.dll
 C:\Users\aaron\Desktop\Projects\C#\Hotkeys\obj\Debug\net6.0-windows\CreateMacro.g.cs
 C:\Users\aaron\Desktop\Projects\C#\Hotkeys\obj\Debug\net6.0-windows\CreateMacro.baml
+C:\Users\aaron\Desktop\Projects\C#\Hotkeys\obj\Debug\net6.0-windows\Hotkeys.csproj.ResolveComReference.cache
+C:\Users\aaron\Desktop\Projects\C#\Hotkeys\bin\Debug\net6.0-windows\32x32.ico

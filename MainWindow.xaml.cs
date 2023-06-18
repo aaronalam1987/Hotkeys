@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualBasic;
 using System.Windows.Threading;
 using System.Xml;
+using WinForms = System.Windows.Forms;
 
 namespace Hotkeys
 {
@@ -30,6 +31,15 @@ namespace Hotkeys
         {
             InitializeComponent();
             Load_Settings();
+
+            WinForms.NotifyIcon notifyIcon = new WinForms.NotifyIcon();
+            notifyIcon.Icon = new System.Drawing.Icon("32x32.ico");
+            notifyIcon.Visible = true;
+            notifyIcon.Text = "Hotkeys";
+            notifyIcon.MouseDoubleClick += NotifyIcon_Click;
+
+            notifyIcon.ContextMenuStrip = new WinForms.ContextMenuStrip();
+            notifyIcon.ContextMenuStrip.Items.Add("Exit", null, ContextExitClick);
 
             //Create a new timer which is used to update time on Arduino LED once connected.
             //Could avoid using this method by equipping the Arduino with an RTC module.
@@ -73,6 +83,7 @@ namespace Hotkeys
 
         public void Load_Settings()
         {
+            int doMinimise = 0;
             //Load settings from XML file
             if (File.Exists(@"settings.xml")){
                 XmlReader readSettings = XmlReader.Create(@"settings.xml");
@@ -96,10 +107,19 @@ namespace Hotkeys
                             B4_Location.Text = readSettings.ReadElementContentAsString();
                             typeLabelB4.Content = CheckType(B4_Location.Text);
                             break;
-
+                        case "MOS":
+                            doMinimise = readSettings.ReadElementContentAsInt();
+                            break;
                     }
                 }
             }
+            if(doMinimise == 1)
+            {
+                minimiseOnStartup.IsChecked = true;
+                Hide();
+                ShowInTaskbar = false;
+            }
+            
         }
 
         public void Save_Settings()
@@ -116,6 +136,13 @@ namespace Hotkeys
                 writer.WriteElementString("B2", B2_Location.Text);
                 writer.WriteElementString("B3", B3_Location.Text);
                 writer.WriteElementString("B4", B4_Location.Text);
+                if (minimiseOnStartup.IsChecked == true) {
+                    writer.WriteElementString("MOS", "1");
+                }
+                else
+                {
+                    writer.WriteElementString("MOS", "0");
+                }
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
                 writer.Flush();
@@ -130,7 +157,7 @@ namespace Hotkeys
         public void update_Time(object? sender, EventArgs e)
         {
             //This runs every minute and updates the connected Arduino time.
-            //We can rely on using port.IsOpen being the correct device as it previous checks confirm this.
+            //We can rely on using port.IsOpen being the correct device as previous checks confirm this.
             if (port.IsOpen)
             {
                 port.Write("2" + DateAndTime.Now.ToShortTimeString() + "\n");
@@ -186,7 +213,7 @@ namespace Hotkeys
                                 }
                                 else
                                 {
-                                    //Hit break point, conver to lower and check if it contains any holdable press.
+                                    //Hit break point, convert to lower and check if it contains any holdable press.
                                     sendString = sendString.ToLower();
                                     if(sendString == "ctrl" || sendString == "alt")
                                     {
@@ -274,16 +301,33 @@ namespace Hotkeys
         }
 
         void MainWindow_StateChanged(object sender, EventArgs e)
-        {
-            
-            if(this.WindowState == WindowState.Minimized)
+        {            
+            if(WindowState == WindowState.Minimized)
             {
-                this.ShowInTaskbar = false;
+                ShowInTaskbar = false;
+            }
 
+            if(WindowState == WindowState.Normal)
+            {
+                ShowInTaskbar = true;
             }
         }
 
         private void exit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void NotifyIcon_Click(object? sender, EventArgs e)
+        {
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+            ShowInTaskbar = true;
+            
+        }
+
+        private void ContextExitClick(object? sender, EventArgs e)
         {
             Close();
         }
