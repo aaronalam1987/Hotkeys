@@ -59,6 +59,7 @@ namespace Hotkeys
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            if (!Macro.Text.ToString().EndsWith(",")) { Macro.Text += ","; }
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.DefaultExt = ".";
             saveFileDialog.Filter = "Hotkey Macro (*.hkmac)|*.hkmac";

@@ -48,7 +48,7 @@ namespace Hotkeys
             {"z", 90 },
             {"enter", 13 },
             {"ctrl", 17 },
-            {"space", 31 },
+            {"space", 32 },
             {"escape", 27 },
             {"alt", 18 },
             {"f1", 112 },
