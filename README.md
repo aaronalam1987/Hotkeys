@@ -9,3 +9,8 @@ each are associated with a selected application or macro file set in the applica
 There is a built in macro creator, able to create basic macro files which seems to be working quite well.
 
 Application settings are stored in an XML file and are loaded if available on launch and saved on every exit.
+
+
+![HK1](https://github.com/aaronalam1987/Hotkeys/assets/46248931/3bd26ef2-938a-4b10-8717-a97440ad7275)
+![HK2](https://github.com/aaronalam1987/Hotkeys/assets/46248931/a7ad31c9-57ee-4c58-836c-d37b1d032cc5)
+![HK3](https://github.com/aaronalam1987/Hotkeys/assets/46248931/d7ec71fe-7d38-4c19-a1a8-a52c21c2d8b3)
